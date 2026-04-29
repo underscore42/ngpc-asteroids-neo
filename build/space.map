@@ -1,0 +1,195 @@
+(C)Copyright TOSHIBA CORPORATION 1993-2009  All rights reserved
+
+Wed Apr 29 16:28:49 2026
+
+Toshiba Unified Linker (32) V2.0p     [Page     1]     Z:\home\gandalf\projects\ngpc
+Runtime option : D:\ngpcbins\ngpcbins\T900\BIN\tulink.exe -la -o Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\space.abs Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\lcf\space.lcf Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\system.lib D:\ngpcbins\ngpcbins\T900\LIB\c900ml.lib Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\src_main.rel Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\common_library.rel 
+
+  Command file : Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\lcf\space.lcf
+    memory
+    {
+    	io(RW)	: org=0x000000, len=0x000100
+    	ram(RW)	: org=0x004000, len=0x002C00
+    	rom(RX)	: org=0x200000, len=0x200000
+    }
+    
+    sections
+    {
+    	far_area	org=0x004000								: {*(f_area)}
+    	far_startup	org=0x200000								: {*(f_header)}
+    	far_const	org=org(far_startup)+sizeof(far_startup)		: {*(f_const)}
+    	far_code	org=org(far_const)+sizeof(far_const)	: {*(f_code)}
+    	far_data	org=org(far_code)+sizeof(far_code)
+    				addr=org(far_area)+sizeof(far_area)			: {*(f_data)}
+    	__DataRAM = addr(far_data);
+    }
+
+  Input files (modules)
+    Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\src_main.rel (main_c)
+    Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\common_library.rel (library_c)
+    Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\system.lib (int_lv wave )
+
+  Link map
+    Memory     Out-sec    Attri   Base       Length     In-sec(In-file)        Information
+    ---------- ---------- ------- ---------- ---------- ---------------------- ---------------
+    io                                     0        100                        *** Gap ***
+    ram        far_area   DATA          4000         13 f_area  (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\src_main.rel)
+                                                                               NORMAL
+    ram        far_area   DATA          4013          1                        *** Gap ***
+    ram        far_area   DATA          4014          9 f_area  (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\common_library.rel)
+                                                                               NORMAL
+    ram                                 401D       2BE3                        *** Gap ***
+    rom        far_const  ROMDATA     200000         E0 f_const (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\src_main.rel)
+                                                                               NORMAL
+    rom        far_const  ROMDATA     2000E0       15AC f_const (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\common_library.rel)
+                                                                               NORMAL
+    rom        far_code   CODE        20168C        7A3 f_code  (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\src_main.rel)
+                                                                               NORMAL
+    rom        far_code   CODE        201E2F       10D5 f_code  (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\common_library.rel)
+                                                                               NORMAL
+    rom        far_data   DATA        202F04          B f_data  (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\src_main.rel)
+                                                                               NORMAL
+    rom        SYSLIB     CODE        202F0F        120 SYSLIB  (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\system.lib)
+                                                                               NORMAL
+    rom        SYSLIB     CODE        20302F         9C SYSLIB  (Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\system.lib)
+                                                                               NORMAL
+    rom                               2030CB     1FCF35                        *** Gap ***
+
+  Symbol table for Z:\home\gandalf\projects\ngpc\devkit\ngpc-space\build\space.abs
+      Symbol       Address  In-sec   Cross-reference
+      ------------ -------- -------- --------------------------------------
+    Input module : main_c
+      _CartID        200020 f_const  
+      _CartTitle     200024 f_const  
+      _Licensed      200000 f_const  
+      _Reserved      200030 f_const  
+      _System        200022 f_const  
+      _main          201D4B f_code   
+      _ptr           20001C f_const  
+    Input module : library_c
+      _BitmapMask    20162C f_const  
+      _BitmapNewMask
+                     20163C f_const  
+      _BlockCopy     2024BE f_code   
+      _ClearBitmap_2
+                     202B33 f_code   
+      _ClearScreen   201F74 f_code   main_c   
+      _CopyBitmap    2028D1 f_code   
+      _Cos           202621 f_code   
+      _CpuSpeed      2020E4 f_code   
+      _CreateBitmap
+                     20275A f_code   
+      _CreateBitmap_2
+                     202B56 f_code   
+      _DayNames      2015E6 f_const  
+      _DrawBitmap    202946 f_code   
+      _DrawLine      2029BD f_code   
+      _DrawLineHorizontal
+                     202AFA f_code   
+      _DrawLineVertical
+                     202AC1 f_code   
+      _DummyFunction
+                     201E2F f_code   
+      _FillScreen    202D86 f_code   
+      _Flash         202E76 f_code   
+      _GetRandom     2025B6 f_code   
+      _GetSavedData
+                     202EA3 f_code   
+      _GetTile       202070 f_code   
+      _GetTime       202634 f_code   
+      _InitNGPC      201E6C f_code   main_c   
+      _InitialiseQRandom
+                     2025F3 f_code   
+      _InstallSoundDriver
+                     2024DE f_code   
+      _InstallSounds
+                     202502 f_code   
+      _InstallTileSet
+                     2023F6 f_code   
+      _InstallTileSetAt
+                     2023C3 f_code   
+      _Multiply32bit
+                     20259A f_code   
+      _NeoTracker_Driver
+                     200630 f_const  
+      _NeoTracker_InstallDriver
+                     2026A9 f_code   
+      _NeoTracker_PlayMusic
+                     202733 f_code   
+      _NeoTracker_PlaySFX
+                     202743 f_code   
+      _NeoTracker_SendGroup
+                     2026DF f_code   
+      _NeoTracker_StopAll
+                     202753 f_code   
+      _OffsetValues
+                     20167C f_const  
+      _PlaySound     202577 f_code   
+      _PrintDecimal
+                     202172 f_code   
+      _PrintHex      202250 f_code   
+      _PrintHex2     2022D3 f_code   
+      _PrintNumber   2021C9 f_code   
+      _PrintString   20236A f_code   main_c   
+      _PutBitmapTile
+                     202891 f_code   
+      _PutTile       202025 f_code   main_c   
+      _QRandom       2025FA f_code   
+      _QuickRandomNumbers
+                     2010E6 f_const  
+      _QuickSetPixel
+                     202832 f_code   
+      _RAND_RandomData
+                       4018 f_area   
+      _RandomNumberCounter
+                       401C f_area   
+      _ResumeOff     201F55 f_code   
+      _SFXDriver_Z80
+                     2000E0 f_const  
+      _SFXInstalled
+                       4016 f_area   
+      _SeedRandom    202585 f_code   
+      _SetAlarm      202676 f_code   
+      _SetBackgroundColour
+                     202406 f_code   main_c   
+      _SetColors     201FA8 f_code   
+      _SetMoreColors
+                     202CF0 f_code   
+      _SetPalette    202009 f_code   main_c   
+      _SetPixel      2027B5 f_code   
+      _SetPixel_2    202BFE f_code   
+      _SetScreen     202E26 f_code   
+      _SetSprite     20241B f_code   
+      _SetSpritePosition
+                     20249F f_code   
+      _SetWake       202650 f_code   
+      _SetWindowColor
+                     202413 f_code   
+      _ShiftScroll   202E43 f_code   
+      _Sin           202611 f_code   
+      _SineTable256
+                     2014E6 f_const  
+      _Sleep         202147 f_code   
+      _SpriteControl
+                     20246B f_code   
+      _StopAllSound
+                     20257F f_code   
+      _SwapPlanes    202E6C f_code   
+      _SysPlayWave   20269C f_code   
+      _SysSetSystemFont
+                     201F5B f_code   main_c   
+      _SysShutdown   201F3F f_code   
+      _TileScreen    202DC5 f_code   
+      _UnsetSprite   20248D f_code   
+      _VBCounter       4014 f_area   
+      _VBInterrupt   201E30 f_code   
+      _WaitVblank    202135 f_code   
+      _WaitVsync     20211E f_code   main_c   
+      _WaitVsyncHARD
+                     202101 f_code   
+    Input module : wave
+      WAVE_OUT       202F0F SYSLIB   library_c 
+    Input module : int_lv
+      INT_LV_SET     20302F SYSLIB   wave     
+
+Linker end,No error
