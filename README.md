@@ -31,7 +31,7 @@ make run
 ## Project Structure
 
 ```
-ngpc-space/
+ngpc-asteroids/
 ├── Makefile            # Build rules (reads toolchain.mk)
 ├── bootstrap.sh        # Environment setup / verification
 ├── toolchain.mk        # Auto-generated toolchain paths
