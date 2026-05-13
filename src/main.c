@@ -72,6 +72,136 @@ static const u16 ufo_t[8]      = { 0x0000,0x03C0,0x07E0,0x1FF8,0x3FFC,0x0FF0,0x0
 static const u16 ufo_shot_t[8] = { 0x0000,0x0000,0x0000,0x0100,0x0100,0x0000,0x0000,0x0000 };
 static const u16 star_t[8]     = { 0x0000,0x0000,0x0000,0x0100,0x0000,0x0000,0x0000,0x0000 };
 
+/* ---- Marquee title graphic: 160x56 px = 20x7 tiles ---- */
+#define T_MARQUEE  300
+#define MARQUEE_W  20
+#define MARQUEE_H  7
+/* Marquee: 160x56px = 20x7 = 140 tiles */
+/* Packed 2bpp: bits 15,14=px0 ... bits 1,0=px7 */
+static const u16 mq_2[8] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001 };
+static const u16 mq_3[8] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x4000 };
+static const u16 mq_10[8] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x1400 };
+static const u16 mq_15[8] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x1000 };
+static const u16 mq_20[8] = { 0x0001, 0x0001, 0x0005, 0x0005, 0x0005, 0x0005, 0x0005, 0x0005 };
+static const u16 mq_21[8] = { 0x5500, 0x5540, 0x5540, 0x5550, 0x5550, 0x5154, 0x5154, 0x4055 };
+static const u16 mq_22[8] = { 0x0055, 0x0155, 0x0155, 0x0154, 0x0154, 0x0055, 0x0055, 0x0005 };
+static const u16 mq_23[8] = { 0x5541, 0x5540, 0x5550, 0x0000, 0x0000, 0x5400, 0x5550, 0x5554 };
+static const u16 mq_24[8] = { 0x5555, 0x5555, 0x5555, 0x0015, 0x0015, 0x0015, 0x0015, 0x0005 };
+static const u16 mq_25[8] = { 0x5545, 0x5541, 0x5541, 0x4001, 0x4001, 0x4001, 0x4000, 0x5000 };
+static const u16 mq_26[8] = { 0x5555, 0x5555, 0x5555, 0x5400, 0x5400, 0x5555, 0x5555, 0x5555 };
+static const u16 mq_27[8] = { 0x4055, 0x4055, 0x4015, 0x0015, 0x0015, 0x4015, 0x5015, 0x5005 };
+static const u16 mq_28[8] = { 0x5550, 0x5554, 0x5555, 0x4055, 0x4055, 0x4055, 0x5555, 0x5554 };
+static const u16 mq_29[8] = { 0x0005, 0x0015, 0x0055, 0x0055, 0x0055, 0x0055, 0x0055, 0x0055 };
+static const u16 mq_30[8] = { 0x5550, 0x5555, 0x5555, 0x0015, 0x0005, 0x0005, 0x0001, 0x0001 };
+static const u16 mq_31[8] = { 0x0055, 0x0015, 0x4015, 0x5015, 0x5015, 0x5415, 0x5405, 0x5405 };
+static const u16 mq_32[8] = { 0x0055, 0x4055, 0x4055, 0x4055, 0x4015, 0x5015, 0x5015, 0x5015 };
+static const u16 mq_33[8] = { 0x5550, 0x5555, 0x5555, 0x4055, 0x4005, 0x4005, 0x4001, 0x4001 };
+static const u16 mq_34[8] = { 0x0005, 0x0015, 0x4015, 0x5015, 0x5015, 0x5415, 0x5405, 0x5401 };
+static const u16 mq_35[8] = { 0x5554, 0x5554, 0x5554, 0x0000, 0x4000, 0x5540, 0x5554, 0x5555 };
+static const u16 mq_36[8] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x4000 };
+static const u16 mq_40[8] = { 0x0015, 0x0015, 0x0015, 0x0015, 0x0015, 0x0015, 0x0000, 0x0000 };
+static const u16 mq_41[8] = { 0x4015, 0x5555, 0x5555, 0x5555, 0x4001, 0x4001, 0x0000, 0x0000 };
+static const u16 mq_42[8] = { 0x4000, 0x4000, 0x5010, 0x5015, 0x5415, 0x5515, 0x0000, 0x0000 };
+static const u16 mq_43[8] = { 0x1555, 0x0055, 0x0055, 0x4155, 0x5555, 0x5554, 0x1540, 0x0000 };
+static const u16 mq_44[8] = { 0x0005, 0x0005, 0x0005, 0x0005, 0x0001, 0x0001, 0x0000, 0x0000 };
+static const u16 mq_45[8] = { 0x5000, 0x5000, 0x5000, 0x5400, 0x5400, 0x5400, 0x0000, 0x0000 };
+static const u16 mq_46[8] = { 0x5500, 0x5500, 0x1540, 0x1555, 0x1555, 0x1555, 0x0000, 0x0000 };
+static const u16 mq_47[8] = { 0x0005, 0x0005, 0x0005, 0x5405, 0x5501, 0x5501, 0x0000, 0x0000 };
+static const u16 mq_48[8] = { 0x5555, 0x5055, 0x5015, 0x5005, 0x5401, 0x5400, 0x0000, 0x0000 };
+static const u16 mq_49[8] = { 0x0055, 0x4015, 0x5015, 0x5005, 0x5401, 0x5500, 0x0000, 0x0000 };
+static const u16 mq_50[8] = { 0x0001, 0x4001, 0x5001, 0x5415, 0x5555, 0x5555, 0x0154, 0x0000 };
+static const u16 mq_51[8] = { 0x5405, 0x5405, 0x5405, 0x5401, 0x5001, 0x4001, 0x0000, 0x0000 };
+static const u16 mq_52[8] = { 0x5005, 0x5005, 0x5405, 0x5405, 0x5405, 0x5401, 0x0000, 0x0000 };
+static const u16 mq_53[8] = { 0x5001, 0x5001, 0x5005, 0x5555, 0x5555, 0x5555, 0x0000, 0x0000 };
+static const u16 mq_54[8] = { 0x5400, 0x5400, 0x5404, 0x5405, 0x5001, 0x4001, 0x0000, 0x0000 };
+static const u16 mq_55[8] = { 0x0555, 0x0015, 0x0005, 0x5015, 0x5555, 0x5555, 0x0554, 0x0000 };
+static const u16 mq_56[8] = { 0x4000, 0x5000, 0x5000, 0x5000, 0x4000, 0x4000, 0x0000, 0x0000 };
+static const u16 mq_101[8] = { 0x0000, 0x0555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_102[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_103[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_104[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_105[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_106[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_107[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_108[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_109[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_110[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_111[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_112[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_113[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_114[8] = { 0x0000, 0x5555, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
+static const u16 mq_115[8] = { 0x0005, 0x5555, 0x0005, 0x0005, 0x0005, 0x0005, 0x0005, 0x0000 };
+static const u16 mq_116[8] = { 0x1401, 0x5555, 0x0515, 0x0515, 0x0515, 0x0505, 0x0501, 0x0000 };
+static const u16 mq_117[8] = { 0x5001, 0x5555, 0x1514, 0x5514, 0x0014, 0x5515, 0x5401, 0x0000 };
+static const u16 mq_118[8] = { 0x5000, 0x5400, 0x1500, 0x1500, 0x1500, 0x5400, 0x5000, 0x0000 };
+
+static void install_marquee(void) {
+    InstallTileSetAt((const unsigned short (*)[8])mq_2, 8, T_MARQUEE + 2);
+    InstallTileSetAt((const unsigned short (*)[8])mq_3, 8, T_MARQUEE + 3);
+    InstallTileSetAt((const unsigned short (*)[8])mq_10, 8, T_MARQUEE + 10);
+    InstallTileSetAt((const unsigned short (*)[8])mq_15, 8, T_MARQUEE + 15);
+    InstallTileSetAt((const unsigned short (*)[8])mq_20, 8, T_MARQUEE + 20);
+    InstallTileSetAt((const unsigned short (*)[8])mq_21, 8, T_MARQUEE + 21);
+    InstallTileSetAt((const unsigned short (*)[8])mq_22, 8, T_MARQUEE + 22);
+    InstallTileSetAt((const unsigned short (*)[8])mq_23, 8, T_MARQUEE + 23);
+    InstallTileSetAt((const unsigned short (*)[8])mq_24, 8, T_MARQUEE + 24);
+    InstallTileSetAt((const unsigned short (*)[8])mq_25, 8, T_MARQUEE + 25);
+    InstallTileSetAt((const unsigned short (*)[8])mq_26, 8, T_MARQUEE + 26);
+    InstallTileSetAt((const unsigned short (*)[8])mq_27, 8, T_MARQUEE + 27);
+    InstallTileSetAt((const unsigned short (*)[8])mq_28, 8, T_MARQUEE + 28);
+    InstallTileSetAt((const unsigned short (*)[8])mq_29, 8, T_MARQUEE + 29);
+    InstallTileSetAt((const unsigned short (*)[8])mq_30, 8, T_MARQUEE + 30);
+    InstallTileSetAt((const unsigned short (*)[8])mq_31, 8, T_MARQUEE + 31);
+    InstallTileSetAt((const unsigned short (*)[8])mq_32, 8, T_MARQUEE + 32);
+    InstallTileSetAt((const unsigned short (*)[8])mq_33, 8, T_MARQUEE + 33);
+    InstallTileSetAt((const unsigned short (*)[8])mq_34, 8, T_MARQUEE + 34);
+    InstallTileSetAt((const unsigned short (*)[8])mq_35, 8, T_MARQUEE + 35);
+    InstallTileSetAt((const unsigned short (*)[8])mq_36, 8, T_MARQUEE + 36);
+    InstallTileSetAt((const unsigned short (*)[8])mq_40, 8, T_MARQUEE + 40);
+    InstallTileSetAt((const unsigned short (*)[8])mq_41, 8, T_MARQUEE + 41);
+    InstallTileSetAt((const unsigned short (*)[8])mq_42, 8, T_MARQUEE + 42);
+    InstallTileSetAt((const unsigned short (*)[8])mq_43, 8, T_MARQUEE + 43);
+    InstallTileSetAt((const unsigned short (*)[8])mq_44, 8, T_MARQUEE + 44);
+    InstallTileSetAt((const unsigned short (*)[8])mq_45, 8, T_MARQUEE + 45);
+    InstallTileSetAt((const unsigned short (*)[8])mq_46, 8, T_MARQUEE + 46);
+    InstallTileSetAt((const unsigned short (*)[8])mq_47, 8, T_MARQUEE + 47);
+    InstallTileSetAt((const unsigned short (*)[8])mq_48, 8, T_MARQUEE + 48);
+    InstallTileSetAt((const unsigned short (*)[8])mq_49, 8, T_MARQUEE + 49);
+    InstallTileSetAt((const unsigned short (*)[8])mq_50, 8, T_MARQUEE + 50);
+    InstallTileSetAt((const unsigned short (*)[8])mq_51, 8, T_MARQUEE + 51);
+    InstallTileSetAt((const unsigned short (*)[8])mq_52, 8, T_MARQUEE + 52);
+    InstallTileSetAt((const unsigned short (*)[8])mq_53, 8, T_MARQUEE + 53);
+    InstallTileSetAt((const unsigned short (*)[8])mq_54, 8, T_MARQUEE + 54);
+    InstallTileSetAt((const unsigned short (*)[8])mq_55, 8, T_MARQUEE + 55);
+    InstallTileSetAt((const unsigned short (*)[8])mq_56, 8, T_MARQUEE + 56);
+    InstallTileSetAt((const unsigned short (*)[8])mq_101, 8, T_MARQUEE + 101);
+    InstallTileSetAt((const unsigned short (*)[8])mq_102, 8, T_MARQUEE + 102);
+    InstallTileSetAt((const unsigned short (*)[8])mq_103, 8, T_MARQUEE + 103);
+    InstallTileSetAt((const unsigned short (*)[8])mq_104, 8, T_MARQUEE + 104);
+    InstallTileSetAt((const unsigned short (*)[8])mq_105, 8, T_MARQUEE + 105);
+    InstallTileSetAt((const unsigned short (*)[8])mq_106, 8, T_MARQUEE + 106);
+    InstallTileSetAt((const unsigned short (*)[8])mq_107, 8, T_MARQUEE + 107);
+    InstallTileSetAt((const unsigned short (*)[8])mq_108, 8, T_MARQUEE + 108);
+    InstallTileSetAt((const unsigned short (*)[8])mq_109, 8, T_MARQUEE + 109);
+    InstallTileSetAt((const unsigned short (*)[8])mq_110, 8, T_MARQUEE + 110);
+    InstallTileSetAt((const unsigned short (*)[8])mq_111, 8, T_MARQUEE + 111);
+    InstallTileSetAt((const unsigned short (*)[8])mq_112, 8, T_MARQUEE + 112);
+    InstallTileSetAt((const unsigned short (*)[8])mq_113, 8, T_MARQUEE + 113);
+    InstallTileSetAt((const unsigned short (*)[8])mq_114, 8, T_MARQUEE + 114);
+    InstallTileSetAt((const unsigned short (*)[8])mq_115, 8, T_MARQUEE + 115);
+    InstallTileSetAt((const unsigned short (*)[8])mq_116, 8, T_MARQUEE + 116);
+    InstallTileSetAt((const unsigned short (*)[8])mq_117, 8, T_MARQUEE + 117);
+    InstallTileSetAt((const unsigned short (*)[8])mq_118, 8, T_MARQUEE + 118);
+}
+
+
+
+
+
+
+
+
+
 /* ---- Tile indices (after system font at 0..143) ---- */
 #define T_SHIP     144
 #define T_THRST    152
@@ -107,6 +237,7 @@ static void install_tiles(void) {
     InstallTileSetAt((const unsigned short (*)[8])ufo_t,      8, T_UFO);
     InstallTileSetAt((const unsigned short (*)[8])ufo_shot_t, 8, T_USHOT);
     InstallTileSetAt((const unsigned short (*)[8])star_t,     8, T_STAR);
+    install_marquee();
 }
 
 /* ---- Constants ---- */
@@ -420,34 +551,62 @@ static void draw_stars(void) {
 }
 
 /* ---- Palette setup ---- */
+#define PAL_MARQUEE 7  /* marquee title graphic */
+
 static void setup_palettes(void) {
     SetBackgroundColour(RGB(0, 0, 0));
+    /* 0: white text */
     SetPalette(SCR_1_PLANE, PAL_TEXT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
-    SetPalette(SCR_1_PLANE, PAL_SHIP, 0, RGB(13,13,15), RGB(10,10,13), RGB(15,15,15));
+    /* 1: ship — bright blue-white, col3 used for thrust flame (orange) */
+    SetPalette(SCR_1_PLANE, PAL_SHIP, 0, RGB(10,12,15), RGB(7,9,13), RGB(15,10,2));
+    /* 2: large rocks — brightest grey */
     SetPalette(SCR_1_PLANE, PAL_ROCK1, 0, RGB(13,13,13), RGB(11,11,11), RGB(15,15,15));
+    /* 3: medium rocks — mid grey */
     SetPalette(SCR_1_PLANE, PAL_ROCK2, 0, RGB(9,9,9), RGB(7,7,7), RGB(11,11,11));
+    /* 4: small rocks — dim grey */
     SetPalette(SCR_1_PLANE, PAL_ROCK3, 0, RGB(6,6,6), RGB(4,4,4), RGB(8,8,8));
+    /* 5: dim stars/HUD labels */
     SetPalette(SCR_1_PLANE, PAL_DIM, 0, RGB(4,4,4), RGB(3,3,3), RGB(5,5,5));
-    SetPalette(SCR_1_PLANE, PAL_UFO, 0, RGB(10,12,10), RGB(8,10,8), RGB(12,14,12));
+    /* 6: UFO — bright green */
+    SetPalette(SCR_1_PLANE, PAL_UFO, 0, RGB(6,15,6), RGB(4,12,4), RGB(8,15,8));
+    /* 7: marquee title — warm gold/sepia */
+    SetPalette(SCR_1_PLANE, PAL_MARQUEE, 0, RGB(15,13,8), RGB(12,10,6), RGB(15,15,12));
 }
 
 /* ---- Title ---- */
 static void draw_title(void) {
+    u8 tx, ty;
     ClearScreen(SCR_1_PLANE);
     setup_palettes();
     SysSetSystemFont();
     install_tiles();
-    PrintString(SCR_1_PLANE, PAL_DIM,  0, 0, "--------------------");
-    PrintString(SCR_1_PLANE, PAL_SHIP, 1, 2, "A S T E R O I D S");
-    PrintString(SCR_1_PLANE, PAL_DIM,  2, 3, "================");
-    PutTile(SCR_1_PLANE, PAL_SHIP, 10, 5, T_SHIP);
-    PutTile(SCR_1_PLANE, PAL_SHIP, 10, 4, T_BULLET);
-    PutTile(SCR_1_PLANE, PAL_ROCK1, 3, 6, T_ROCK_L);
-    PutTile(SCR_1_PLANE, PAL_ROCK2, 16, 7, T_ROCK_M);
-    PutTile(SCR_1_PLANE, PAL_ROCK3, 7, 8, T_ROCK_S);
-    PutTile(SCR_1_PLANE, PAL_ROCK1, 14, 5, T_ROCK_L);
-    PutTile(SCR_1_PLANE, PAL_UFO, 5, 10, T_UFO);
-    PrintString(SCR_1_PLANE, PAL_ROCK2, 3, 12, "NEO GEO POCKET");
+
+    /* Marquee graphic: 20x7 tiles, placed at top of screen */
+    for (ty = 0; ty < MARQUEE_H; ty++)
+        for (tx = 0; tx < MARQUEE_W; tx++)
+            PutTile(SCR_1_PLANE, PAL_MARQUEE, tx, ty, T_MARQUEE + ty * MARQUEE_W + tx);
+
+    /* Ship decoration — 20% left of centre, pointing NW with thrust */
+    PutTile(SCR_1_PLANE, PAL_SHIP, 6, 9, T_THRST + 7);  /* NW thrust */
+    PutTile(SCR_1_PLANE, PAL_SHIP, 5, 8, T_BULLET);      /* bullet trail NW */
+
+    /* Asteroid decorations */
+    PutTile(SCR_1_PLANE, PAL_ROCK1, 3, 10, T_ROCK_L);
+    PutTile(SCR_1_PLANE, PAL_ROCK2, 16, 10, T_ROCK_M);
+    PutTile(SCR_1_PLANE, PAL_ROCK3, 12, 12, T_ROCK_S);
+    PutTile(SCR_1_PLANE, PAL_ROCK1, 14, 8, T_ROCK_L);
+
+    /* UFO decoration */
+    PutTile(SCR_1_PLANE, PAL_UFO, 17, 12, T_UFO);
+
+    /* Stars scattered around */
+    PutTile(SCR_1_PLANE, PAL_DIM, 1, 8, T_STAR);
+    PutTile(SCR_1_PLANE, PAL_DIM, 18, 9, T_STAR);
+    PutTile(SCR_1_PLANE, PAL_DIM, 9, 13, T_STAR);
+    PutTile(SCR_1_PLANE, PAL_DIM, 2, 12, T_STAR);
+    PutTile(SCR_1_PLANE, PAL_DIM, 15, 13, T_STAR);
+
+    /* Instructions */
     PrintString(SCR_1_PLANE, PAL_SHIP, 3, 15, "PRESS  A  START");
     PrintString(SCR_1_PLANE, PAL_DIM,  1, 16, "LR:ROT U:THR B:WARP");
     PrintString(SCR_1_PLANE, PAL_DIM,  0, 17, "--------------------");

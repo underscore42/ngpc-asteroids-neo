@@ -90,30 +90,13 @@ def png_to_tiles(image, mode='1bpp', threshold=128):
                     py = ty * 8 + row
                     r, g, b, a = pixels[px, py]
                     idx = pixel_to_index(r, g, b, a, mode, threshold)
-                    # Pack 2 bits per pixel, MSB = leftmost
-                    # u16 word: bits 15-14 = pixel 0, bits 13-12 = pixel 1, etc.
-                    # But NGPC tile format: low byte = plane 0, high byte = plane 1
-                    # Each plane byte: MSB = leftmost pixel
-                    # pixel colour = plane0_bit + plane1_bit*2
-                    pass
-                # Actually, InstallTileSetAt copies u16 words directly to tile RAM.
-                # Tile RAM format: each row = 2 bytes (plane0, plane1)
-                # As a u16: low byte = plane0, high byte = plane1
-                # plane0 bit 7 = leftmost pixel bit 0
-                # plane1 bit 7 = leftmost pixel bit 1
-                plane0 = 0
-                plane1 = 0
-                for col in range(8):
-                    px = tx * 8 + col
-                    py = ty * 8 + row
-                    r, g, b, a = pixels[px, py]
-                    idx = pixel_to_index(r, g, b, a, mode, threshold)
-                    bit = 7 - col  # MSB = leftmost
-                    if idx & 1:
-                        plane0 |= (1 << bit)
-                    if idx & 2:
-                        plane1 |= (1 << bit)
-                word = plane0 | (plane1 << 8)
+                    # NGPC packed 2bpp: each u16 = 8 pixels, 2 bits each
+                    # bits 15,14 = pixel 0 (leftmost)
+                    # bits 13,12 = pixel 1
+                    # ...
+                    # bits 1,0 = pixel 7 (rightmost)
+                    shift = 14 - col * 2
+                    word |= (idx << shift)
                 tile.append(word)
             tiles.append(tile)
 
@@ -129,13 +112,10 @@ def tile_ascii(tile):
     """Render tile as ASCII art for preview."""
     lines = []
     for word in tile:
-        plane0 = word & 0xFF
-        plane1 = (word >> 8) & 0xFF
         row = ''
-        for bit in range(7, -1, -1):
-            b0 = (plane0 >> bit) & 1
-            b1 = (plane1 >> bit) & 1
-            idx = b0 + b1 * 2
+        for col in range(8):
+            shift = 14 - col * 2
+            idx = (word >> shift) & 3
             row += ' .#@'[idx]
         lines.append(row)
     return lines
