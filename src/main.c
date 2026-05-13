@@ -469,18 +469,21 @@ static u8 find_free(void) {
     return 255;
 }
 
+
+static const u8 ship_mask[8] = { 0x0D,0x0F,0x0F,0x0F,0x07,0x0F,0x0F,0x0F };
+static const u8 thrst_mask[8] = { 0x0D,0x0F,0x0F,0x0F,0x07,0x0F,0x0F,0x0F };
 static void erase_ent(u8 i) {
-    u8 tx, ty;
+    u8 tx, ty, mask;
     tx = ent_otx[i]; ty = ent_oty[i];
     if (tx >= 20 || ty >= 19) return;
     if (ent_type[i] == ENT_SHIP) {
-        /* 2x2 */
-        PutTile(SCR_1_PLANE, 0, tx, ty, ' ');
-        if (tx+1 < 20) PutTile(SCR_1_PLANE, 0, tx+1, ty, ' ');
-        if (ty+1 < 19) PutTile(SCR_1_PLANE, 0, tx, ty+1, ' ');
-        if (tx+1 < 20 && ty+1 < 19) PutTile(SCR_1_PLANE, 0, tx+1, ty+1, ' ');
+        if (thrusting) mask = thrst_mask[ent_dir[i]];
+        else mask = ship_mask[ent_dir[i]];
+        if (mask & 1) PutTile(SCR_1_PLANE, 0, tx, ty, ' ');
+        if ((mask & 2) && tx+1 < 20) PutTile(SCR_1_PLANE, 0, tx+1, ty, ' ');
+        if ((mask & 4) && ty+1 < 19) PutTile(SCR_1_PLANE, 0, tx, ty+1, ' ');
+        if ((mask & 8) && tx+1 < 20 && ty+1 < 19) PutTile(SCR_1_PLANE, 0, tx+1, ty+1, ' ');
     } else if (ent_type[i] == ENT_UFO) {
-        /* 4x2 */
         u8 c, r;
         for (r = 0; r < 2; r++)
             for (c = 0; c < 4; c++)
@@ -491,8 +494,10 @@ static void erase_ent(u8 i) {
     }
 }
 
+/* Ship tile masks: bit0=TL, bit1=TR, bit2=BL, bit3=BR */
+
 static void draw_ent(u8 i) {
-    u8 tx, ty;
+    u8 tx, ty, mask;
     u16 base;
     tx = ent_px[i] >> 3;
     ty = ent_py[i] >> 3;
@@ -502,12 +507,12 @@ static void draw_ent(u8 i) {
     if (ent_type[i] == ENT_SHIP) {
         if (tx >= 19) tx = 18;
         if (ty >= 18) ty = 17;
-        if (thrusting) base = T_THRST + (u16)ent_dir[i] * 4;
-        else base = T_SHIP + (u16)ent_dir[i] * 4;
-        PutTile(SCR_1_PLANE, ent_pal[i], tx, ty, base);
-        PutTile(SCR_1_PLANE, ent_pal[i], tx+1, ty, base+1);
-        PutTile(SCR_1_PLANE, ent_pal[i], tx, ty+1, base+2);
-        PutTile(SCR_1_PLANE, ent_pal[i], tx+1, ty+1, base+3);
+        if (thrusting) { base = T_THRST + (u16)ent_dir[i] * 4; mask = thrst_mask[ent_dir[i]]; }
+        else { base = T_SHIP + (u16)ent_dir[i] * 4; mask = ship_mask[ent_dir[i]]; }
+        if (mask & 1) PutTile(SCR_1_PLANE, ent_pal[i], tx, ty, base);
+        if (mask & 2) PutTile(SCR_1_PLANE, ent_pal[i], tx+1, ty, base+1);
+        if (mask & 4) PutTile(SCR_1_PLANE, ent_pal[i], tx, ty+1, base+2);
+        if (mask & 8) PutTile(SCR_1_PLANE, ent_pal[i], tx+1, ty+1, base+3);
     } else if (ent_type[i] == ENT_UFO) {
         if (tx >= 17) tx = 16;
         if (ty >= 18) ty = 17;
