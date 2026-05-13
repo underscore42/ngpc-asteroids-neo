@@ -1,74 +1,110 @@
 # NGPC Asteroids
 
-Classic space game for the Neo Geo Pocket Color:
+Classic Asteroids for the Neo Geo Pocket Color — standalone breakout from the
+[ngpc-space](https://github.com/) Space Collection homebrew compilation cart.
 
-- **Asteroids** — rocks, rotation, shoot
+## Features
+- 8-direction ship with thrust & momentum
+- Greyscale asteroids (large/medium/small with different brightness)
+- UFO alien ship (appears wave 3+, fires aimed shots)
+- Hyperspace warp (B button, 10% death chance, cooldown)
+- Title screen, high scores, wave counter
+- Subtle starfield background
+- Sound effects (thrust, fire, warp, explosions)
 
-## Requirements
+## Screenshots
+*(coming soon)*
 
-- Linux (tested on Linux Mint)
+## Controls (Mednafen)
+| Key | NGPC | Action |
+|-----|------|--------|
+| A/D | L/R Joystick | Rotate |
+| W | Up Joystick | Thrust |
+| Z | A Button | Fire |
+| X | B Button | Warp (Hyperspace) |
+| Enter | Option | Menu / Back |
+
+## Building
+
+### Requirements
+- Linux (tested on Linux Mint, ThinkPad T440p)
 - Wine 5.0+
 - Toshiba TLCS-900H toolchain (cc900, tulink, tuconv, s242ngp)
-- Mednafen 1.22.2+ for testing
+- Mednafen 1.22.2+ for emulator testing
 - GNU Make
+- Python 3 + Pillow (for asset pipeline)
+- Physical NGP/NGPC + flash cart for hardware testing
 
-## Quick Start
-
+### Quick Start
 ```bash
 git clone <this repo>
 cd ngp-asteroids
-
-# Point at your toolchain and verify everything
-TOOLCHAIN_SRC=/path/to/ngpcbins ./bootstrap.sh
-
-# Build
-make
-
-# Run in emulator (mednafen in this case)
+make clean && make
 make run
 ```
 
-## Project Structure
+### Asset Pipeline
+Convert PNG sprites to C tile data:
+```bash
+# 1bpp (on/off) — good for ship, bullets
+python3 tools/png2sprite.py assets/ship_up.png --name ship_up --mode 1bpp --offset 144
 
+# 2bpp (4 colours) — good for shaded asteroids
+python3 tools/png2sprite.py assets/asteroid_large.png --name ast_large --mode 2bpp --offset 160
+
+# Preview in terminal
+python3 tools/png2sprite.py assets/ship_up.png --preview
 ```
-ngpc-asteroids/
+
+Supported sprite sizes: 8×8, 16×16, 16×32, 24×24, or any multiple of 8.
+Multi-tile sprites are output in left-to-right, top-to-bottom tile order.
+
+## Project Structure
+```
+ngp-asteroids/
 ├── Makefile            # Build rules (reads toolchain.mk)
 ├── bootstrap.sh        # Environment setup / verification
 ├── toolchain.mk        # Auto-generated toolchain paths
-├── common/             # Shared code across all games
-│   ├── ngpc.h          #   Hardware registers
-│   ├── carthdr.h       #   ROM header
-│   └── library.c / .h  #   Support files
-├── src/                # Game code
-│   └── main.c          #   Entry point + game
+├── common/             # Shared framework (ameliandev template)
+│   ├── ngpc.h          #   Hardware registers & types
+│   ├── library.c/.h    #   Framework: tiles, palettes, sound, etc.
+│   └── library.inc     #   Z80 sound driver binary
+├── src/                # Game source
+│   ├── main.c          #   Complete game (~640 lines)
+│   └── carthdr.h       #   ROM header (NGPC colour mode)
 ├── lcf/
-│   └── asteroids.lcf       # Linker command file
-├── lib/                # system.rel if needed
+│   └── asteroids.lcf   # Linker command file
+├── lib/
+│   └── system.lib      # NGPC system library
+├── assets/             # Source artwork (PNG)
+├── tools/              # Asset conversion scripts
+│   └── png2sprite.py   #   PNG → C tile data converter
 ├── build/              # Compiled objects (generated)
-├── bin/                # ROM output (generated)
-│   └── asteroids.ngp   # ROM image
-├── assets/             # Tile data, sprites
-└── tools/              # Asset conversion scripts
+└── bin/
+    └── asteroids.ngp   # ROM image (generated)
 ```
 
 ## Toolchain Notes
-
-- cc900 is C89 only — no stdint, no mixed declarations, no typedef enums
+- cc900 is C89 only — no stdint, no mixed declarations
 - cc900 must run from its own BIN directory under Wine
-- All paths through the compiler use `winepath -w` conversion
-- See `common/ngpc.h` for hardware register reference
+- All paths use `winepath -w` conversion
+- `volatile u16*` generates bad code in cc900 — use non-volatile pointers
+- Signed math and `PrintDecimal` crash the runtime — use unsigned throughout
+- JOYPAD register at 0x6F82 is active-HIGH in Mednafen
+- Link order: game objects before common objects, system.lib before c900ml.lib
+- CartID must be 0x0000 for correct NGPC colour mode detection
 
-## Controls (Mednafen)
+## Acknowledgements
+- **ameliandev** — [ngpc-project-template](https://github.com/ameliandev/ngpc-project-template)
+  providing the C framework (library.c/h, system.lib) and build system foundation
+  that makes NGPC homebrew development in C practical
+- **lordmizel** — Super Hang-On reference implementation (C++/SDL2) that informed
+  the broader NGPC homebrew project this game is part of
+- **Dark Fader / BlackThunder** — s242ngp ROM packer tool
+- **Toshiba** — TLCS-900H toolchain (cc900, tulink, tuconv)
+- **SNK** — Neo Geo Pocket Color hardware
+- **Mednafen** — accurate NGP/NGPC emulation for development testing
+- The original 1979 Atari **Asteroids** by Ed Logg and Lyle Rains
 
-| Key | NGPC |
-|-----|------|
-| Left Joystick | Rotate Left |
-| Right Joystick | Rotate Rght |
-| Up Joystick | Thrust |
-| A Button | Fire |
-| B Button | Warp |
-| Option | Menu |
-
-## License
-
+## Licence
 Homebrew — do what you want with it.

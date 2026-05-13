@@ -13,6 +13,37 @@
 #include "ngpc.h"
 #include "library.h"
 
+/* ---- Sound effects ---- */
+/* Channel: 0-1=tone, 2=noise. PlaySound(N) where N is 1-based */
+static const SOUNDEFFECT game_sounds[] = {
+    /* 0: fire — short high blip */
+    { 1, 3, 0, 0x0180, 0x0020, 1, 0, 0x0100, 0x0200,
+      15, 3, 1, 0, 0, 15 },
+    /* 1: thrust — white noise swoosh */
+    { 2, 4, 0, 0x0040, 0x0010, 2, 0, 0x0020, 0x0100,
+      12, 2, 1, 0, 0, 15 },
+    /* 2: warp — descending tone sweep */
+    { 0, 6, 0, 0x0200, 0x0040, 1, 0, 0x0040, 0x0300,
+      14, 1, 2, 0, 0, 15 },
+    /* 3: explosion — low noise rumble */
+    { 2, 8, 0, 0x0030, 0x0008, 2, 0, 0x0010, 0x0080,
+      15, 1, 2, 0, 0, 15 },
+    /* 4: ufo hum — repeating mid tone */
+    { 0, 10, 1, 0x0100, 0x0010, 3, 1, 0x00C0, 0x0140,
+      8, 1, 3, 1, 4, 10 },
+    /* 5: ufo fire — quick falling tone */
+    { 1, 3, 0, 0x0140, 0x0030, 1, 0, 0x0080, 0x0200,
+      13, 2, 1, 0, 0, 15 }
+};
+#define SND_FIRE    1
+#define SND_THRUST  2
+#define SND_WARP    3
+#define SND_EXPLODE 4
+#define SND_UFO_HUM 5
+#define SND_UFO_FIRE 6
+static u8 sound_installed;
+static u8 thrust_snd_tick;
+
 /* ---- Tile data: u16[8] per tile, 1bpp ---- */
 
 static const u16 ship_n[8]  = { 0x0100,0x0380,0x0380,0x06C0,0x06C0,0x0C60,0x0C60,0x0000 };
@@ -317,6 +348,7 @@ static void update_ufo(void) {
     if (ufo_fire_tmr > 0) ufo_fire_tmr--;
     else {
         ufo_fire();
+        PlaySound(SND_UFO_FIRE);
         ufo_fire_tmr = UFO_FIRE_RATE - (wave * 5);
         if (ufo_fire_tmr < 30) ufo_fire_tmr = 30;
     }
@@ -330,6 +362,7 @@ static void draw_title(void);
 static void do_game_over(void) {
     game_over = 1; state = STATE_OVER;
     insert_high_score(score);
+    PlaySound(SND_EXPLODE);
     PrintString(SCR_1_PLANE, PAL_SHIP, 4, 9, "GAME OVER!");
     PrintString(SCR_1_PLANE, PAL_TEXT, 2, 11, "A:RETRY OPT:SCORES");
     skip = 30;
@@ -390,7 +423,7 @@ static void draw_stars(void) {
 static void setup_palettes(void) {
     SetBackgroundColour(RGB(0, 0, 0));
     SetPalette(SCR_1_PLANE, PAL_TEXT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
-    SetPalette(SCR_1_PLANE, PAL_SHIP, 0, RGB(0,15,0), RGB(0,10,0), RGB(0,15,0));
+    SetPalette(SCR_1_PLANE, PAL_SHIP, 0, RGB(13,13,15), RGB(10,10,13), RGB(15,15,15));
     SetPalette(SCR_1_PLANE, PAL_ROCK1, 0, RGB(13,13,13), RGB(11,11,11), RGB(15,15,15));
     SetPalette(SCR_1_PLANE, PAL_ROCK2, 0, RGB(9,9,9), RGB(7,7,7), RGB(11,11,11));
     SetPalette(SCR_1_PLANE, PAL_ROCK3, 0, RGB(6,6,6), RGB(4,4,4), RGB(8,8,8));
@@ -402,7 +435,6 @@ static void setup_palettes(void) {
 static void draw_title(void) {
     ClearScreen(SCR_1_PLANE);
     setup_palettes();
-    
     SysSetSystemFont();
     install_tiles();
     PrintString(SCR_1_PLANE, PAL_DIM,  0, 0, "--------------------");
@@ -507,7 +539,9 @@ static void game_update(void) {
             thrusting = 1;
             ship_vx_add = dx_add[ship_dir]; ship_vx_sub = dx_sub[ship_dir];
             ship_vy_add = dy_add[ship_dir]; ship_vy_sub = dy_sub[ship_dir];
-        }
+            thrust_snd_tick++;
+            if (thrust_snd_tick >= 15) { thrust_snd_tick = 0; PlaySound(SND_THRUST); }
+        } else { thrust_snd_tick = 0; }
         drift_timer++;
         if (drift_timer >= 3) {
             drift_timer = 0; erase_ent(0);
@@ -520,9 +554,9 @@ static void game_update(void) {
         if ((pad_press & J_A) && fire_tick >= 6) {
             bcount = 0;
             for (i = 0; i < MAX_ENTS; i++) if (ent_type[i] == ENT_BULLET) bcount++;
-            if (bcount < 4) { fire_bullet(); fire_tick = 0; }
+            if (bcount < 4) { fire_bullet(); fire_tick = 0; PlaySound(SND_FIRE); }
         }
-        if ((pad_press & J_B) && alive) warp_ship();
+        if ((pad_press & J_B) && alive) { warp_ship(); PlaySound(SND_WARP); }
     }
 
     for (i = 1; i < MAX_ENTS; i++) {
@@ -563,6 +597,7 @@ static void game_update(void) {
             if (ent_type[j] < ENT_ROCK_L || ent_type[j] > ENT_ROCK_S) continue;
             if ((ent_px[0]>>3)==(ent_px[j]>>3) && (ent_py[0]>>3)==(ent_py[j]>>3)) {
                 erase_ent(0); ent_type[0] = ENT_NONE; alive = 0;
+                PlaySound(SND_EXPLODE);
                 if (lives > 0) lives = lives - 1; spawn_timer = 0;
                 if (lives == 0) do_game_over(); break;
             }
@@ -610,6 +645,14 @@ void main(void) {
     SysSetSystemFont();
     install_tiles();
     setup_palettes();
+
+    /* Init sound */
+    if (!sound_installed) {
+        InstallSoundDriver();
+        InstallSounds(game_sounds, 6);
+        sound_installed = 1;
+    }
+    thrust_snd_tick = 0;
 
     high_scores[0] = 1000; high_scores[1] = 800;
     high_scores[2] = 600; high_scores[3] = 400; high_scores[4] = 200;
