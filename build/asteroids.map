@@ -1,0 +1,193 @@
+(C)Copyright TOSHIBA CORPORATION 1993-2009  All rights reserved
+
+Wed May 13 14:16:57 2026
+
+Toshiba Unified Linker (32) V2.0p     [Page     1]     Z:\home\gandalf\projects\ngpc
+Runtime option : Z:\home\gandalf\projects\ngpc\devkit\ngpcbins\ngpcbins\T900\BIN\tulink.exe -la -o Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\asteroids.abs Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\lcf\asteroids.lcf Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\system.lib Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\..\ngpcbins\ngpcbins\T900\LIB\c900ml.lib Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\src_main.rel Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\common_library.rel 
+
+  Command file : Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\lcf\asteroids.lcf
+    memory
+    {
+    	io(RW)	: org=0x000000, len=0x000100
+    	ram(RW)	: org=0x004000, len=0x002C00
+    	rom(RX)	: org=0x200000, len=0x200000
+    }
+    
+    sections
+    {
+    	far_area	org=0x004000								: {*(f_area)}
+    	far_startup	org=0x200000								: {*(f_header)}
+    	far_const	org=org(far_startup)+sizeof(far_startup)		: {*(f_const)}
+    	far_code	org=org(far_const)+sizeof(far_const)	: {*(f_code)}
+    	far_data	org=org(far_code)+sizeof(far_code)
+    				addr=org(far_area)+sizeof(far_area)			: {*(f_data)}
+    	__DataRAM = addr(far_data);
+    }
+
+  Input files (modules)
+    Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\src_main.rel (main_c)
+    Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\common_library.rel (library_c)
+    Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\system.lib (int_lv wave )
+
+  Link map
+    Memory     Out-sec    Attri   Base       Length     In-sec(In-file)        Information
+    ---------- ---------- ------- ---------- ---------- ---------------------- ---------------
+    io                                     0        100                        *** Gap ***
+    ram        far_area   DATA          4000        19D f_area  (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\src_main.rel)
+                                                                               NORMAL
+    ram        far_area   DATA          419D          1                        *** Gap ***
+    ram        far_area   DATA          419E          9 f_area  (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\common_library.rel)
+                                                                               NORMAL
+    ram                                 41A7       2A59                        *** Gap ***
+    rom        far_const  ROMDATA     200000        2B2 f_const (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\src_main.rel)
+                                                                               NORMAL
+    rom        far_const  ROMDATA     2002B2       15AC f_const (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\common_library.rel)
+                                                                               NORMAL
+    rom        far_code   CODE        20185E       1CF3 f_code  (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\src_main.rel)
+                                                                               NORMAL
+    rom        far_code   CODE        203551       10D5 f_code  (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\common_library.rel)
+                                                                               NORMAL
+    rom        SYSLIB     CODE        204626        120 SYSLIB  (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\system.lib)
+                                                                               NORMAL
+    rom        SYSLIB     CODE        204746         9C SYSLIB  (Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\system.lib)
+                                                                               NORMAL
+    rom                               2047E2     1FB81E                        *** Gap ***
+
+  Symbol table for Z:\home\gandalf\projects\ngpc\devkit\ngp-asteroids\build\asteroids.abs
+      Symbol       Address  In-sec   Cross-reference
+      ------------ -------- -------- --------------------------------------
+    Input module : main_c
+      _CartID        200020 f_const  
+      _CartTitle     200024 f_const  
+      _Licensed      200000 f_const  
+      _Reserved      200030 f_const  
+      _System        200022 f_const  
+      _main          2033FA f_code   
+      _ptr           20001C f_const  
+    Input module : library_c
+      _BitmapMask    2017FE f_const  
+      _BitmapNewMask
+                     20180E f_const  
+      _BlockCopy     203BE0 f_code   
+      _ClearBitmap_2
+                     204255 f_code   
+      _ClearScreen   203696 f_code   main_c   
+      _CopyBitmap    203FF3 f_code   
+      _Cos           203D43 f_code   
+      _CpuSpeed      203806 f_code   
+      _CreateBitmap
+                     203E7C f_code   
+      _CreateBitmap_2
+                     204278 f_code   
+      _DayNames      2017B8 f_const  
+      _DrawBitmap    204068 f_code   
+      _DrawLine      2040DF f_code   
+      _DrawLineHorizontal
+                     20421C f_code   
+      _DrawLineVertical
+                     2041E3 f_code   
+      _DummyFunction
+                     203551 f_code   
+      _FillScreen    2044A8 f_code   
+      _Flash         204598 f_code   
+      _GetRandom     203CD8 f_code   
+      _GetSavedData
+                     2045C5 f_code   
+      _GetTile       203792 f_code   
+      _GetTime       203D56 f_code   
+      _InitNGPC      20358E f_code   main_c   
+      _InitialiseQRandom
+                     203D15 f_code   
+      _InstallSoundDriver
+                     203C00 f_code   
+      _InstallSounds
+                     203C24 f_code   
+      _InstallTileSet
+                     203B18 f_code   
+      _InstallTileSetAt
+                     203AE5 f_code   main_c   
+      _Multiply32bit
+                     203CBC f_code   
+      _NeoTracker_Driver
+                     200802 f_const  
+      _NeoTracker_InstallDriver
+                     203DCB f_code   
+      _NeoTracker_PlayMusic
+                     203E55 f_code   
+      _NeoTracker_PlaySFX
+                     203E65 f_code   
+      _NeoTracker_SendGroup
+                     203E01 f_code   
+      _NeoTracker_StopAll
+                     203E75 f_code   
+      _OffsetValues
+                     20184E f_const  
+      _PlaySound     203C99 f_code   
+      _PrintDecimal
+                     203894 f_code   
+      _PrintHex      203972 f_code   
+      _PrintHex2     2039F5 f_code   
+      _PrintNumber   2038EB f_code   
+      _PrintString   203A8C f_code   main_c   
+      _PutBitmapTile
+                     203FB3 f_code   
+      _PutTile       203747 f_code   main_c   
+      _QRandom       203D1C f_code   
+      _QuickRandomNumbers
+                     2012B8 f_const  
+      _QuickSetPixel
+                     203F54 f_code   
+      _RAND_RandomData
+                       41A2 f_area   
+      _RandomNumberCounter
+                       41A6 f_area   
+      _ResumeOff     203677 f_code   
+      _SFXDriver_Z80
+                     2002B2 f_const  
+      _SFXInstalled
+                       41A0 f_area   
+      _SeedRandom    203CA7 f_code   
+      _SetAlarm      203D98 f_code   
+      _SetBackgroundColour
+                     203B28 f_code   main_c   
+      _SetColors     2036CA f_code   
+      _SetMoreColors
+                     204412 f_code   
+      _SetPalette    20372B f_code   main_c   
+      _SetPixel      203ED7 f_code   
+      _SetPixel_2    204320 f_code   
+      _SetScreen     204548 f_code   
+      _SetSprite     203B3D f_code   
+      _SetSpritePosition
+                     203BC1 f_code   
+      _SetWake       203D72 f_code   
+      _SetWindowColor
+                     203B35 f_code   
+      _ShiftScroll   204565 f_code   
+      _Sin           203D33 f_code   
+      _SineTable256
+                     2016B8 f_const  
+      _Sleep         203869 f_code   
+      _SpriteControl
+                     203B8D f_code   
+      _StopAllSound
+                     203CA1 f_code   
+      _SwapPlanes    20458E f_code   
+      _SysPlayWave   203DBE f_code   
+      _SysSetSystemFont
+                     20367D f_code   main_c   
+      _SysShutdown   203661 f_code   
+      _TileScreen    2044E7 f_code   
+      _UnsetSprite   203BAF f_code   
+      _VBCounter       419E f_area   main_c   
+      _VBInterrupt   203552 f_code   
+      _WaitVblank    203857 f_code   
+      _WaitVsync     203840 f_code   main_c   
+      _WaitVsyncHARD
+                     203823 f_code   
+    Input module : wave
+      WAVE_OUT       204626 SYSLIB   library_c 
+    Input module : int_lv
+      INT_LV_SET     204746 SYSLIB   wave     
+
+Linker end,No error
