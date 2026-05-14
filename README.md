@@ -6,7 +6,7 @@ Built as a homebrew learning project using the ameliandev NGPC framework,
 exploring the TLCS-900H toolchain, K2GE graphics engine, and T6W28 sound.
 
 ## Features
-- 16×16 ship sprite with 8-direction rotation and thrust animation
+- 16×16 ship sprite with 8-direction rotation and thrust sprites 
 - 32×16 alien ship with aimed shots (appears every wave)
 - Multi-size asteroids: large (16×16), medium (8×8), small (8×8)
 - Greyscale palette system with distinct brightness per rock size
@@ -94,7 +94,7 @@ Tiles are 8×8 pixels, packed 2bpp: each row is one `u16` word where
 bits 15-14 = pixel 0 (leftmost), bits 13-12 = pixel 1, etc.
 Colour index 0 = transparent on sprite plane, opaque black on scroll plane.
 
-### Key Learnings
+### Oddballs
 - `CartID` must be `0x0000` for NGPC colour mode to work in Mednafen
 - System font occupies tiles 0-255; custom tiles safe from 144+, marquee at 300+
 - `InstallTileSetAt()` Len parameter is in **words** (u16), not tiles
@@ -105,21 +105,18 @@ Colour index 0 = transparent on sprite plane, opaque black on scroll plane.
 ### Sprite Sizes
 | Entity | Size | Tiles | Palette |
 |---|---|---|---|
-| Ship | 16×16 | 2×2 = 4 | PAL_SHIP (blue + orange thrust) |
-| Alien | 32×16 | 4×2 = 8 | PAL_UFO (green) |
-| Large rock | 16×16 | 2×2 = 4 | PAL_ROCK1 (bright grey) |
-| Medium rock | 8×8 | 1 | PAL_ROCK2 (mid grey) |
-| Small rock | 8×8 | 1 | PAL_ROCK3 (dim grey) |
-| Bullet | 8×8 | 1 | PAL_SHIP |
-| UFO shot | 8×8 | 1 | PAL_UFO |
+| Ship | 16×16 | 2×2 = 4 | SHIP (blue + orange thrust) |
+| Alien | 32×16 | 4×2 = 8 | UFO (green) |
+| Large rock | 16×16 | 2×2 = 4 | ROCK1 (bright grey) |
+| Medium rock | 8×8 | 1 | ROCK2 (mid grey) |
+| Small rock | 8×8 | 1 | ROCK3 (dim grey) |
+| Bullet | 8×8 | 1 | SHIP |
+| UFO shot | 8×8 | 1 | UFO |
 
 ## Roadmap
-- [ ] Move entities to sprite plane (true transparency)
-- [ ] Parallax scrolling starfield on scroll plane 2
-- [ ] 16 unique alien ships (SNK/Metal Slug inspired, one per wave)
-- [ ] Alien collection gallery
+- [ ] Fine tune difficulty, with smaller asteroids was too easy
+- [ ] Better sprite overlaps
 - [ ] Explosion animations
-- [ ] More asteroid variants
 - [ ] Flash save verification on real hardware
 
 ## Acknowledgements
