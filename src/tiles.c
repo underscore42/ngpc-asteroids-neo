@@ -115,26 +115,21 @@ static const u16 alien_ship[8][8] = {
 
 
 /* ---- Small sprites (8x8) ---- */
-static const u16 rock_large[8] = { 0x07E0,0x1FF8,0x3FFC,0x7FFE,0x7FFE,0x3FFC,0x1FF8,0x07E0 };
-static const u16 rock_med[8]   = { 0x0000,0x03C0,0x07E0,0x0FF0,0x0FF0,0x07E0,0x03C0,0x0000 };
-static const u16 rock_small[8] = { 0x0000,0x0000,0x0180,0x03C0,0x03C0,0x0180,0x0000,0x0000 };
+/* Large asteroid: 16x16 = 2x2 tiles */
+static const u16 rock_large[4][8] = {
+    { 0x0155, 0x0040, 0x0050, 0x0550, 0x5554, 0x4000, 0x4000, 0x4000 },
+    { 0x5400, 0x0500, 0x0150, 0x0014, 0x0005, 0x0001, 0x0055, 0x1550 },
+    { 0x4000, 0x4000, 0x5000, 0x5000, 0x1400, 0x0400, 0x0555, 0x0154 },
+    { 0x0500, 0x0150, 0x0054, 0x0005, 0x0005, 0x5414, 0x5550, 0x0140 },
+};
+/* Medium asteroid: 8x8 = 1 tile */
+static const u16 rock_med[8] = { 0x0554,0x1555,0x5005,0x1014,0x1005,0x5001,0x5545,0x1554 };
+/* Small asteroid: 8x8 = 1 tile */
+static const u16 rock_small[8] = { 0x0550,0x1554,0x5405,0x5405,0x5541,0x5145,0x1554,0x1554 };
 static const u16 bullet_t[8]   = { 0x0000,0x0000,0x0000,0x0180,0x0180,0x0000,0x0000,0x0000 };
 static const u16 ufo_shot_t[8] = { 0x0000,0x0000,0x0000,0x0100,0x0100,0x0000,0x0000,0x0000 };
 static const u16 star_t[8]     = { 0x0000,0x0000,0x0000,0x0100,0x0000,0x0000,0x0000,0x0000 };
 
-#define MARQUEE_W  20
-#define MARQUEE_H  5
-/* ---- Tile indices ---- */
-#define T_SHIP     144
-#define T_THRST    176
-#define T_ALIEN    208
-#define T_ROCK_L   216
-#define T_ROCK_M   217
-#define T_ROCK_S   218
-#define T_BULLET   219
-#define T_USHOT    220
-#define T_STAR     221
-#define T_MARQUEE  300
 /* Marquee: 160x40px = 20x5 = 100 tiles */
 /* Colour-aware: idx1=bright, idx2=grey, idx3=red accent */
 static const u16 mq_0[8] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0x0001, 0x0005, 0x0005 };
@@ -325,7 +320,7 @@ void install_tiles(void) {
     /* Alien */
     InstallTileSetAt((const unsigned short (*)[8])alien_ship, 64, T_ALIEN);
     /* Small sprites */
-    InstallTileSetAt((const unsigned short (*)[8])rock_large, 8, T_ROCK_L);
+    InstallTileSetAt((const unsigned short (*)[8])rock_large, 32, T_ROCK_L);
     InstallTileSetAt((const unsigned short (*)[8])rock_med,   8, T_ROCK_M);
     InstallTileSetAt((const unsigned short (*)[8])rock_small, 8, T_ROCK_S);
     InstallTileSetAt((const unsigned short (*)[8])bullet_t,   8, T_BULLET);

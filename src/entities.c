@@ -41,6 +41,11 @@ void erase_ent(u8 i) {
             for (c = 0; c < 4; c++)
                 if (tx+c < 20 && ty+r < 19)
                     PutTile(SCR_1_PLANE, 0, tx+c, ty+r, ' ');
+    } else if (ent_type[i] == ENT_ROCK_L) {
+        PutTile(SCR_1_PLANE, 0, tx, ty, ' ');
+        if (tx+1 < 20) PutTile(SCR_1_PLANE, 0, tx+1, ty, ' ');
+        if (ty+1 < 19) PutTile(SCR_1_PLANE, 0, tx, ty+1, ' ');
+        if (tx+1 < 20 && ty+1 < 19) PutTile(SCR_1_PLANE, 0, tx+1, ty+1, ' ');
     } else {
         PutTile(SCR_1_PLANE, 0, tx, ty, ' ');
     }
@@ -69,7 +74,11 @@ void draw_ent(u8 i) {
             for (c = 0; c < 4; c++)
                 PutTile(SCR_1_PLANE, ent_pal[i], tx+c, ty+r, base + r*4 + c);
     } else if (ent_type[i] == ENT_ROCK_L) {
+        if (tx >= 19) tx = 18; if (ty >= 18) ty = 17;
         PutTile(SCR_1_PLANE, ent_pal[i], tx, ty, T_ROCK_L);
+        PutTile(SCR_1_PLANE, ent_pal[i], tx+1, ty, T_ROCK_L+1);
+        PutTile(SCR_1_PLANE, ent_pal[i], tx, ty+1, T_ROCK_L+2);
+        PutTile(SCR_1_PLANE, ent_pal[i], tx+1, ty+1, T_ROCK_L+3);
     } else if (ent_type[i] == ENT_ROCK_M) {
         PutTile(SCR_1_PLANE, ent_pal[i], tx, ty, T_ROCK_M);
     } else if (ent_type[i] == ENT_ROCK_S) {
@@ -100,9 +109,11 @@ u8 check_hit(u8 a, u8 b) {
     bx = ent_px[b] >> 3; by = ent_py[b] >> 3;
     if (ent_type[a] == ENT_SHIP) { aw = 2; ah = 2; }
     else if (ent_type[a] == ENT_UFO) { aw = 4; ah = 2; }
+    else if (ent_type[a] == ENT_ROCK_L) { aw = 2; ah = 2; }
     else { aw = 1; ah = 1; }
     if (ent_type[b] == ENT_SHIP) { bw = 2; bh = 2; }
     else if (ent_type[b] == ENT_UFO) { bw = 4; bh = 2; }
+    else if (ent_type[b] == ENT_ROCK_L) { bw = 2; bh = 2; }
     else { bw = 1; bh = 1; }
     if (ax+aw <= bx || bx+bw <= ax) return 0;
     if (ay+ah <= by || by+bh <= ay) return 0;

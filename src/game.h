@@ -48,12 +48,12 @@
 #define T_SHIP     144
 #define T_THRST    176
 #define T_ALIEN    208
-#define T_ROCK_L   216
-#define T_ROCK_M   217
-#define T_ROCK_S   218
-#define T_BULLET   219
-#define T_USHOT    220
-#define T_STAR     221
+#define T_ROCK_L   216  /* 216-219: 2x2 = 4 tiles */
+#define T_ROCK_M   220
+#define T_ROCK_S   221
+#define T_BULLET   222
+#define T_USHOT    223
+#define T_STAR     224
 #define T_MARQUEE  300
 #define MARQUEE_W  20
 #define MARQUEE_H  5

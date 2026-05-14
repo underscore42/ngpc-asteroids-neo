@@ -1,110 +1,135 @@
-# NGPC Asteroids
+# Asteroids Neo — NGPC Homebrew
 
-Classic Asteroids for the Neo Geo Pocket Color — standalone breakout from the
-[ngpc-space](https://github.com/) Space Collection homebrew compilation cart.
+Classic Asteroids reimagined for the Neo Geo Pocket Color.
+
+Built as a homebrew learning project using the ameliandev NGPC framework,
+exploring the TLCS-900H toolchain, K2GE graphics engine, and T6W28 sound.
 
 ## Features
-- 8-direction ship with thrust & momentum
-- Greyscale asteroids (large/medium/small with different brightness)
-- UFO alien ship (appears wave 3+, fires aimed shots)
-- Hyperspace warp (B button, 10% death chance, cooldown)
-- Title screen, high scores, wave counter
+- 16×16 ship sprite with 8-direction rotation and thrust animation
+- 32×16 alien ship with aimed shots (appears every wave)
+- Multi-size asteroids: large (16×16), medium (8×8), small (8×8)
+- Greyscale palette system with distinct brightness per rock size
+- Hyperspace warp (B button, 10% death chance, cooldown timer)
+- Bitmap title screen marquee with colour accents
+- 6 sound effects (fire, thrust, warp, explosion, UFO hum, UFO fire)
+- High score table with flash save attempt
 - Subtle starfield background
-- Sound effects (thrust, fire, warp, explosions)
+- Wave progression with increasing difficulty
 
 ## Screenshots
-*(coming soon)*
+See `screenshots/` directory.
 
-## Controls (Mednafen)
-| Key | NGPC | Action |
-|-----|------|--------|
-| A/D | L/R Joystick | Rotate |
-| W | Up Joystick | Thrust |
-| Z | A Button | Fire |
-| X | B Button | Warp (Hyperspace) |
+## Controls
+| Mednafen Key | NGPC Button | Action |
+|---|---|---|
+| A / D | Left / Right | Rotate ship |
+| W | Up | Thrust |
+| Z | A | Fire |
+| X | B | Warp (Hyperspace) |
 | Enter | Option | Menu / Back |
 
 ## Building
 
 ### Requirements
 - Linux (tested on Linux Mint, ThinkPad T440p)
-- Wine 5.0+
-- Toshiba TLCS-900H toolchain (cc900, tulink, tuconv, s242ngp)
-- Mednafen 1.22.2+ for emulator testing
+- Wine 5.0+ (for TLCS-900H toolchain)
+- Toshiba TLCS-900H toolchain: cc900, tulink, tuconv, s242ngp
+- Mednafen 1.22+ or RetroArch with NeoPop core
 - GNU Make
-- Python 3 + Pillow (for asset pipeline)
-- Physical NGP/NGPC + flash cart for hardware testing
+- Python 3 + Pillow (for `tools/png2sprite.py`)
 
 ### Quick Start
 ```bash
 git clone <this repo>
-cd ngp-asteroids
+cd asteroids-neo
 make clean && make
 make run
 ```
 
 ### Asset Pipeline
-Convert PNG sprites to C tile data:
+Convert PNG sprites to NGPC packed 2bpp tile data:
 ```bash
-# 1bpp (on/off) — good for ship, bullets
-python3 tools/png2sprite.py assets/ship_up.png --name ship_up --mode 1bpp --offset 144
+# 1bpp mode (binary on/off)
+python3 tools/png2sprite.py assets/ship.png --name ship_n --mode 1bpp --preview
 
-# 2bpp (4 colours) — good for shaded asteroids
-python3 tools/png2sprite.py assets/asteroid_large.png --name ast_large --mode 2bpp --offset 160
+# 2bpp mode (4 colour shading)
+python3 tools/png2sprite.py assets/asteroid.png --name rock_large --mode 2bpp --offset 216
 
-# Preview in terminal
-python3 tools/png2sprite.py assets/ship_up.png --preview
+# Round-trip: edit PNG, re-convert, paste into src/tiles.c
 ```
-
-Supported sprite sizes: 8×8, 16×16, 16×32, 24×24, or any multiple of 8.
-Multi-tile sprites are output in left-to-right, top-to-bottom tile order.
 
 ## Project Structure
 ```
-ngp-asteroids/
-├── Makefile            # Build rules (reads toolchain.mk)
-├── bootstrap.sh        # Environment setup / verification
-├── toolchain.mk        # Auto-generated toolchain paths
-├── common/             # Shared framework (ameliandev template)
+asteroids-neo/
+├── src/                # Game source (multi-file)
+│   ├── main.c          #   Entry point, game loop, state machine
+│   ├── game.c/h        #   Shared state, entity pool, constants
+│   ├── entities.c/h    #   Entity rendering, movement, collision
+│   ├── screen.c/h      #   Title screen, HUD, palettes, starfield
+│   ├── tiles.c/h       #   All tile data, install functions
+│   ├── sound.c/h       #   Sound effect definitions
+│   ├── save.c/h        #   Flash high score persistence
+│   └── carthdr.h       #   ROM header
+├── common/             # ameliandev framework
 │   ├── ngpc.h          #   Hardware registers & types
-│   ├── library.c/.h    #   Framework: tiles, palettes, sound, etc.
-│   └── library.inc     #   Z80 sound driver binary
-├── src/                # Game source
-│   ├── main.c          #   Complete game (~640 lines)
-│   └── carthdr.h       #   ROM header (NGPC colour mode)
-├── lcf/
-│   └── asteroids.lcf   # Linker command file
-├── lib/
-│   └── system.lib      # NGPC system library
+│   ├── library.c/h     #   Framework functions
+│   └── library.inc     #   Z80 sound driver
+├── tools/
+│   └── png2sprite.py   #   PNG → packed 2bpp tile converter
 ├── assets/             # Source artwork (PNG)
-├── tools/              # Asset conversion scripts
-│   └── png2sprite.py   #   PNG → C tile data converter
-├── build/              # Compiled objects (generated)
-└── bin/
-    └── asteroids.ngp   # ROM image (generated)
+├── screenshots/        # Game screenshots
+├── releases/           # Release ROM builds
+├── lcf/asteroids.lcf   # Linker command file
+├── lib/system.lib      # NGPC system library
+├── Makefile
+├── LICENSE             # MIT
+└── README.md
 ```
 
-## Toolchain Notes
-- cc900 is C89 only — no stdint, no mixed declarations
-- cc900 must run from its own BIN directory under Wine
-- All paths use `winepath -w` conversion
+## Technical Notes
+
+### NGPC Tile Format
+Tiles are 8×8 pixels, packed 2bpp: each row is one `u16` word where
+bits 15-14 = pixel 0 (leftmost), bits 13-12 = pixel 1, etc.
+Colour index 0 = transparent on sprite plane, opaque black on scroll plane.
+
+### Key Learnings
+- `CartID` must be `0x0000` for NGPC colour mode to work in Mednafen
+- System font occupies tiles 0-255; custom tiles safe from 144+, marquee at 300+
+- `InstallTileSetAt()` Len parameter is in **words** (u16), not tiles
 - `volatile u16*` generates bad code in cc900 — use non-volatile pointers
-- Signed math and `PrintDecimal` crash the runtime — use unsigned throughout
 - JOYPAD register at 0x6F82 is active-HIGH in Mednafen
-- Link order: game objects before common objects, system.lib before c900ml.lib
-- CartID must be 0x0000 for correct NGPC colour mode detection
+- Link order matters: game objects before common, system.lib before c900ml.lib
+
+### Sprite Sizes
+| Entity | Size | Tiles | Palette |
+|---|---|---|---|
+| Ship | 16×16 | 2×2 = 4 | PAL_SHIP (blue + orange thrust) |
+| Alien | 32×16 | 4×2 = 8 | PAL_UFO (green) |
+| Large rock | 16×16 | 2×2 = 4 | PAL_ROCK1 (bright grey) |
+| Medium rock | 8×8 | 1 | PAL_ROCK2 (mid grey) |
+| Small rock | 8×8 | 1 | PAL_ROCK3 (dim grey) |
+| Bullet | 8×8 | 1 | PAL_SHIP |
+| UFO shot | 8×8 | 1 | PAL_UFO |
+
+## Roadmap
+- [ ] Move entities to sprite plane (true transparency)
+- [ ] Parallax scrolling starfield on scroll plane 2
+- [ ] 16 unique alien ships (SNK/Metal Slug inspired, one per wave)
+- [ ] Alien collection gallery
+- [ ] Explosion animations
+- [ ] More asteroid variants
+- [ ] Flash save verification on real hardware
 
 ## Acknowledgements
-- **ameliandev** — [ngpc-project-template](https://github.com/ameliandev/ngpc-project-template)
-  providing the C framework (library.c/h, system.lib) and build system foundation
-  that makes NGPC homebrew development in C practical
-- **lordmizel** — Super Hang-On reference implementation (C++/SDL2) that informed
-  the broader NGPC homebrew project this game is part of
-- **Dark Fader / BlackThunder** — s242ngp ROM packer tool
+- **ameliandev** — [ngpc-project-template](https://github.com/ameliandev/ngpc-project-template):
+  C framework that makes NGPC homebrew practical
+- **Dark Fader / BlackThunder** — s242ngp ROM packer
 - **Toshiba** — TLCS-900H toolchain (cc900, tulink, tuconv)
 - **SNK** — Neo Geo Pocket Color hardware
-- **Mednafen** — accurate NGP/NGPC emulation for development testing
-- The original 1979 Atari **Asteroids** by Ed Logg and Lyle Rains
+- **Mednafen** — accurate NGP/NGPC emulation
+- **Ed Logg & Lyle Rains** — original 1979 Atari Asteroids
 
-## Licence
-Homebrew — do what you want with it.
+## License
+MIT — see [LICENSE](LICENSE)
