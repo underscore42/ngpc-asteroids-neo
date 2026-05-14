@@ -130,6 +130,12 @@ static const u16 bullet_t[8]   = { 0x0000,0x0000,0x0000,0x0180,0x0180,0x0000,0x0
 static const u16 ufo_shot_t[8] = { 0x0000,0x0000,0x0000,0x0100,0x0100,0x0000,0x0000,0x0000 };
 static const u16 star_t[8]     = { 0x0000,0x0000,0x0000,0x0100,0x0000,0x0000,0x0000,0x0000 };
 
+/* Explosion frames: 4 tiles for expanding burst */
+static const u16 explode_1[8] = { 0x0000,0x0000,0x0100,0x0540,0x0100,0x0000,0x0000,0x0000 };
+static const u16 explode_2[8] = { 0x0000,0x0400,0x0140,0x5005,0x0140,0x0400,0x0000,0x0000 };
+static const u16 explode_3[8] = { 0x0100,0x1004,0x0040,0x4001,0x0040,0x1004,0x0100,0x0000 };
+static const u16 explode_4[8] = { 0x4001,0x0000,0x1004,0x0000,0x1004,0x0000,0x4001,0x0000 };
+
 /* Marquee: 160x40px = 20x5 = 100 tiles */
 /* Colour-aware: idx1=bright, idx2=grey, idx3=red accent */
 static const u16 mq_0[8] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0x0001, 0x0005, 0x0005 };
@@ -326,4 +332,8 @@ void install_tiles(void) {
     InstallTileSetAt((const unsigned short (*)[8])bullet_t,   8, T_BULLET);
     InstallTileSetAt((const unsigned short (*)[8])ufo_shot_t, 8, T_USHOT);
     InstallTileSetAt((const unsigned short (*)[8])star_t,     8, T_STAR);
+    InstallTileSetAt((const unsigned short (*)[8])explode_1, 8, T_EXPLODE);
+    InstallTileSetAt((const unsigned short (*)[8])explode_2, 8, T_EXPLODE+1);
+    InstallTileSetAt((const unsigned short (*)[8])explode_3, 8, T_EXPLODE+2);
+    InstallTileSetAt((const unsigned short (*)[8])explode_4, 8, T_EXPLODE+3);
 }

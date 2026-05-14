@@ -23,10 +23,12 @@ u8 ent_pal[MAX_ENTS];
 u8  state, skip, lives, wave, spawn_timer, game_over, alive;
 u16 score;
 u8  ship_dir, thrusting, warp_cooldown;
+u8  spawn_grace;
 u8  ufo_active, ufo_timer, ufo_fire_tmr, ufo_idx;
 u16 high_scores[5];
 u8  pad_cur, pad_prev, pad_press;
 u8  rand_seed;
+u8  difficulty;
 
 /* RNG */
 u8 cheap_rand(u8 max) {

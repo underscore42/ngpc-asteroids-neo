@@ -10,6 +10,7 @@ void draw_scores(void);
 void draw_hud(void);
 void init_stars(void);
 void draw_stars(void);
+void scroll_stars(void);
 void put_score_at(u8 x, u8 y, u16 val);
 
 #endif

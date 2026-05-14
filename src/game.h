@@ -21,6 +21,7 @@
 #define ENT_BULLET  5
 #define ENT_UFO     6
 #define ENT_USHOT   7
+#define ENT_EXPLODE 8
 
 /* ---- Palettes ---- */
 #define PAL_TEXT    0
@@ -54,6 +55,7 @@
 #define T_BULLET   222
 #define T_USHOT    223
 #define T_STAR     224
+#define T_EXPLODE  225  /* 4 tiles for explosion animation */
 #define T_MARQUEE  300
 #define MARQUEE_W  20
 #define MARQUEE_H  5
@@ -80,10 +82,16 @@ extern u8 ent_pal[MAX_ENTS];
 extern u8  state, skip, lives, wave, spawn_timer, game_over, alive;
 extern u16 score;
 extern u8  ship_dir, thrusting, warp_cooldown;
+extern u8  spawn_grace;  /* invincibility frames after spawn */
 extern u8  ufo_active, ufo_timer, ufo_fire_tmr, ufo_idx;
 extern u16 high_scores[5];
 extern u8  pad_cur, pad_prev, pad_press;
 extern u8  rand_seed;
+extern u8  difficulty;  /* 0=EASY, 1=NORMAL, 2=OLD SCHOOL */
+
+#define DIFF_EASY   0
+#define DIFF_NORMAL 1
+#define DIFF_HARD   2
 
 /* ---- Shared utilities ---- */
 u8 cheap_rand(u8 max);

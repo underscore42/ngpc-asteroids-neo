@@ -4,6 +4,7 @@
 
 #include "game.h"
 
+void setup_sprite_palettes(void);
 void init_entities(void);
 void erase_ent(u8 i);
 void draw_ent(u8 i);
@@ -25,5 +26,6 @@ void update_ufo(void);
 
 /* Ship */
 void warp_ship(void);
+void spawn_explosion(u8 px, u8 py, u8 pal);
 
 #endif
