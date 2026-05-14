@@ -7,7 +7,7 @@
 TARGET  = asteroids
 ROM     = bin/$(TARGET).ngp
 LCF     = lcf/asteroids.lcf
-SYSLIB  = system.lib
+SYSLIB  = lib/system.lib
 
 # Sources: common/ + src/
 COMMON_SRCS = $(wildcard common/*.c)
