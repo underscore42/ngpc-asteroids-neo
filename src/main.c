@@ -14,6 +14,11 @@
 
 static u8 rot_tick;
 
+static void clear_sprites(void) {
+    u8 i;
+    for (i = 0; i < 64; i++) UnsetSprite(i);
+}
+
 static void game_start(void) {
     u8 i;
     ClearScreen(SCR_1_PLANE);
@@ -44,7 +49,7 @@ static void game_update(void) {
     if (warp_cooldown > 0) warp_cooldown--;
     if (pad_press & J_OPTION) {
         /* Clear all sprites before returning to title */
-        for (i = 0; i < 64; i++) UnsetSprite(i);
+        clear_sprites();
         state = STATE_TITLE; skip = 10; draw_title(); return;
     }
     update_ufo();
@@ -224,15 +229,15 @@ void main(void) {
                 draw_title();
             }
             if (pad_press & J_A) { state=STATE_GAME; skip=10; game_start(); }
-            if (pad_press & J_OPTION) { state=STATE_SCORES; skip=10; draw_scores(); }
+            if (pad_press & J_OPTION) { clear_sprites(); state=STATE_SCORES; skip=10; draw_scores(); }
         } else if (state==STATE_GAME) {
             game_update();
         } else if (state==STATE_OVER) {
-            if (pad_press & J_A) { state=STATE_GAME; skip=10; game_start(); }
-            if (pad_press & J_OPTION) { state=STATE_SCORES; skip=10; draw_scores(); }
+            if (pad_press & J_A) { clear_sprites(); state=STATE_GAME; skip=10; game_start(); }
+            if (pad_press & J_OPTION) { clear_sprites(); state=STATE_SCORES; skip=10; draw_scores(); }
         } else if (state==STATE_SCORES) {
-            if (pad_press & J_A) { state=STATE_GAME; skip=10; game_start(); }
-            if (pad_press & J_OPTION) { state=STATE_TITLE; skip=10; draw_title(); }
+            if (pad_press & J_A) { clear_sprites(); state=STATE_GAME; skip=10; game_start(); }
+            if (pad_press & J_OPTION) { clear_sprites(); state=STATE_TITLE; skip=10; draw_title(); }
         }
     }
 }
