@@ -1,4 +1,8 @@
-# Asteroids Neo — NGPC Homebrew
+# ASTEROIDS neo — NGPC Homebrew
+
+| Menu | Gameplay |
+|---|---|
+| ![title](https://github.com/underscore42/ngpc-asteroids-neo/blob/main/screenshots/asteroids-0010.png) | ![gameplay](https://github.com/underscore42/ngpc-asteroids-neo/blob/main/screenshots/asteroids-02.png) |
 
 Classic Asteroids reimagined for the Neo Geo Pocket Color.
 
@@ -18,7 +22,8 @@ exploring the TLCS-900H toolchain, K2GE graphics engine, and T6W28 sound.
 - Wave progression with increasing difficulty
 
 ## Screenshots
-See `screenshots/` directory.
+See [screenshots/](https://github.com/underscore42/ngpc-asteroids-neo/tree/main/screenshots) directory.
+
 
 ## Controls
 | Mednafen Key | NGPC Button | Action |
@@ -127,6 +132,9 @@ Colour index 0 = transparent on sprite plane, opaque black on scroll plane.
 - **SNK** — Neo Geo Pocket Color hardware
 - **Mednafen** — accurate NGP/NGPC emulation
 - **Ed Logg & Lyle Rains** — original 1979 Atari Asteroids
+
+## Official Release
+- [ASTEROIDSneo](https://github.com/underscore42/ngpc-asteroids-neo/tree/main/releases)
 
 ## License
 MIT — see [LICENSE](LICENSE)
