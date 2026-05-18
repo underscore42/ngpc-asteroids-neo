@@ -1,5 +1,5 @@
 # ASTEROIDS neo — NGPC Homebrew
- <a href="url"><img src="https://github.com/underscore42/ngpc-asteroids-neo/blob/main/media/asteroids-neo-cart-mockup.png" align="left" height="240" ></a>
+ <a href="https://github.com/underscore42/ngpc-asteroids-neo"><img src="https://github.com/underscore42/ngpc-asteroids-neo/blob/main/media/asteroids-neo-cart-mockup.png" align="left" height="240" ></a>
 
 
 Classic Asteroids reimagined for the Neo Geo Pocket Color.
