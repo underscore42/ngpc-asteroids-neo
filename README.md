@@ -1,14 +1,13 @@
 # ASTEROIDS neo — NGPC Homebrew
+ <a href="https://github.com/underscore42/ngpc-asteroids-neo"><img src="https://github.com/underscore42/ngpc-asteroids-neo/blob/main/media/asteroids-neo-cart-mockup.png" align="left" height="240" ></a>
 
-| Menu | Gameplay |
-|---|---|
-| ![title](https://github.com/underscore42/ngpc-asteroids-neo/blob/main/screenshots/asteroids-0010.png) | ![gameplay](https://github.com/underscore42/ngpc-asteroids-neo/blob/main/screenshots/asteroids-02.png) |
 
 Classic Asteroids reimagined for the Neo Geo Pocket Color.
 
 Built as a homebrew learning project using the ameliandev NGPC framework,
 exploring the TLCS-900H toolchain, K2GE graphics engine, and T6W28 sound.
 
+<br><br><br><br><br><br>
 ## Features
 - 16×16 ship sprite with 8-direction rotation and thrust animation
 - 32×16 alien ship with aimed shots (appears every wave)
@@ -23,7 +22,9 @@ exploring the TLCS-900H toolchain, K2GE graphics engine, and T6W28 sound.
 
 ## Screenshots
 See [screenshots/](https://github.com/underscore42/ngpc-asteroids-neo/tree/main/screenshots) directory.
-
+| Menu | Gameplay |
+|---|---|
+| ![title](https://github.com/underscore42/ngpc-asteroids-neo/blob/main/screenshots/asteroids-0010.png) | ![gameplay](https://github.com/underscore42/ngpc-asteroids-neo/blob/main/screenshots/asteroids-02.png) |
 
 ## Controls
 | Mednafen Key | NGPC Button | Action |
