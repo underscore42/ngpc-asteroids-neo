@@ -29,6 +29,7 @@ u16 high_scores[5];
 u8  pad_cur, pad_prev, pad_press;
 u8  rand_seed;
 u8  difficulty;
+u8  retro_mode;
 
 /* RNG */
 u8 cheap_rand(u8 max) {

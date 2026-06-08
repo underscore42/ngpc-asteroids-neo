@@ -1,13 +1,15 @@
-/* screen.c — Title, HUD, scores, parallax starfield, palettes */
+/* screen.c — Title, HUD, scores, parallax starfield, palettes
+ * Supports retro green monochrome palette (Konami code Easter egg)
+ */
 #include "screen.h"
 #include "tiles.h"
 #include "entities.h"
 
-/* Stars on scroll plane 2 for parallax */
 static u8 bg_scroll_x, bg_scroll_y;
 static u8 bg_tick;
 
-void setup_palettes(void) {
+/* ---- Normal colour palettes ---- */
+static void setup_palettes_colour(void) {
     SetBackgroundColour(RGB(0, 0, 0));
     SetPalette(SCR_1_PLANE, PAL_TEXT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
     SetPalette(SCR_1_PLANE, PAL_SHIP, 0, RGB(10,12,15), RGB(7,9,13), RGB(15,10,2));
@@ -17,9 +19,38 @@ void setup_palettes(void) {
     SetPalette(SCR_1_PLANE, PAL_DIM, 0, RGB(4,4,4), RGB(3,3,3), RGB(5,5,5));
     SetPalette(SCR_1_PLANE, PAL_UFO, 0, RGB(6,15,6), RGB(4,12,4), RGB(8,15,8));
     SetPalette(SCR_1_PLANE, PAL_MARQUEE, 0, RGB(15,14,10), RGB(10,9,6), RGB(15,4,2));
-    /* Scroll plane 2 star palettes */
     SetPalette(SCR_2_PLANE, 0, 0, RGB(3,3,4), RGB(2,2,3), RGB(5,5,6));
     SetPalette(SCR_2_PLANE, 1, 0, RGB(5,5,6), RGB(3,3,4), RGB(7,7,8));
+}
+
+/* ---- Retro green monochrome palettes (Game Boy style) ---- */
+static void setup_palettes_retro(void) {
+    SetBackgroundColour(RGB(0, 1, 0));
+    SetPalette(SCR_1_PLANE, PAL_TEXT, 0, RGB(0,15,0), RGB(0,13,0), RGB(0,15,0));
+    SetPalette(SCR_1_PLANE, PAL_SHIP, 0, RGB(0,14,0), RGB(0,10,0), RGB(0,15,0));
+    SetPalette(SCR_1_PLANE, PAL_ROCK1, 0, RGB(0,15,0), RGB(0,12,0), RGB(0,14,0));
+    SetPalette(SCR_1_PLANE, PAL_ROCK2, 0, RGB(0,11,0), RGB(0,9,0), RGB(0,13,0));
+    SetPalette(SCR_1_PLANE, PAL_ROCK3, 0, RGB(0,8,0), RGB(0,6,0), RGB(0,10,0));
+    SetPalette(SCR_1_PLANE, PAL_DIM, 0, RGB(0,3,0), RGB(0,2,0), RGB(0,4,0));
+    SetPalette(SCR_1_PLANE, PAL_UFO, 0, RGB(0,15,0), RGB(0,11,0), RGB(0,13,0));
+    SetPalette(SCR_1_PLANE, PAL_MARQUEE, 0, RGB(0,15,0), RGB(0,10,0), RGB(0,13,0));
+    SetPalette(SCR_2_PLANE, 0, 0, RGB(0,3,0), RGB(0,2,0), RGB(0,4,0));
+    SetPalette(SCR_2_PLANE, 1, 0, RGB(0,4,0), RGB(0,3,0), RGB(0,5,0));
+}
+
+/* ---- Retro sprite palettes ---- */
+static void setup_sprite_palettes_retro(void) {
+    SetPalette(SPRITE_PLANE, PAL_SHIP, 0, RGB(0,14,0), RGB(0,10,0), RGB(0,15,0));
+    SetPalette(SPRITE_PLANE, PAL_ROCK1, 0, RGB(0,15,0), RGB(0,12,0), RGB(0,14,0));
+    SetPalette(SPRITE_PLANE, PAL_ROCK2, 0, RGB(0,11,0), RGB(0,9,0), RGB(0,13,0));
+    SetPalette(SPRITE_PLANE, PAL_ROCK3, 0, RGB(0,8,0), RGB(0,6,0), RGB(0,10,0));
+    SetPalette(SPRITE_PLANE, PAL_UFO, 0, RGB(0,15,0), RGB(0,11,0), RGB(0,13,0));
+    SetPalette(SPRITE_PLANE, PAL_TEXT, 0, RGB(0,15,0), RGB(0,13,0), RGB(0,15,0));
+}
+
+void setup_palettes(void) {
+    if (retro_mode) setup_palettes_retro();
+    else setup_palettes_colour();
 }
 
 void put_score_at(u8 x, u8 y, u16 val) {
@@ -46,7 +77,6 @@ void draw_hud(void) {
 
 void init_stars(void) {
     u8 x, y;
-    /* Scatter star tiles across scroll plane 2's 32x32 tile map */
     ClearScreen(SCR_2_PLANE);
     for (y = 0; y < 24; y++) {
         for (x = 0; x < 32; x++) {
@@ -68,7 +98,6 @@ void scroll_stars(void) {
 }
 
 void draw_stars(void) {
-    /* Stars are on scroll plane 2 now, just call scroll */
     scroll_stars();
 }
 
@@ -111,7 +140,7 @@ void draw_title(void) {
     PutTile(SCR_1_PLANE, PAL_ROCK2, 11, 11, T_ROCK_M);
     PutTile(SCR_1_PLANE, PAL_ROCK3, 8, 12, T_ROCK_S);
 
-    /* Difficulty indicator */
+    /* Difficulty */
     if (difficulty == DIFF_EASY) PrintString(SCR_1_PLANE, PAL_UFO, 6, 13, "< EASY >");
     else if (difficulty == DIFF_NORMAL) PrintString(SCR_1_PLANE, PAL_SHIP, 5, 13, "< NORMAL >");
     else PrintString(SCR_1_PLANE, PAL_ROCK1, 3, 13, "< OLD SCHOOL >");

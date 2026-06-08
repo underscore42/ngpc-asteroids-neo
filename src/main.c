@@ -1,6 +1,6 @@
 /* main.c — Asteroids SNK Edition
  * Entry point, game loop, state machine
- * Entities on sprite plane, starfield on scroll plane 2
+ * Konami code on title screen toggles retro green palette
  */
 
 #define CARTHDR_IMPL
@@ -13,6 +13,34 @@
 #include "save.h"
 
 static u8 rot_tick;
+
+/* ---- Konami code: Up Up Down Down Left Right Left Right B A ---- */
+static u8 konami_pos;
+static const u8 konami_seq[10] = {
+    0x01, 0x01, 0x02, 0x02, 0x04, 0x08, 0x04, 0x08, 0x20, 0x10
+};
+/* J_UP=0x01 J_DOWN=0x02 J_LEFT=0x04 J_RIGHT=0x08 J_A=0x10 J_B=0x20 */
+
+static void check_konami(void) {
+    u8 expected;
+    if (konami_pos >= 10) return;
+    if (pad_press == 0) return;
+    expected = konami_seq[konami_pos];
+    if (pad_press & expected) {
+        konami_pos++;
+        if (konami_pos >= 10) {
+            /* Toggle retro mode */
+            retro_mode = retro_mode ^ 1;
+            konami_pos = 0;
+            PlaySound(SND_WARP);
+            setup_palettes();
+            setup_sprite_palettes();
+            draw_title();
+        }
+    } else {
+        konami_pos = 0;
+    }
+}
 
 static void clear_sprites(void) {
     u8 i;
@@ -30,12 +58,11 @@ static void game_start(void) {
     ent_pal[0] = PAL_SHIP; ent_otx[0] = 255; ent_oty[0] = 255;
 
     ship_dir = 0; thrusting = 0; rot_tick = 0;
-    spawn_grace = 90;
     score = 0; wave = 1; spawn_timer = 0;
     game_over = 0; alive = 1; warp_cooldown = 0;
+    spawn_grace = 90;
     ufo_active = 0; ufo_timer = 100; ufo_fire_tmr = UFO_FIRE_RATE;
 
-    /* Lives by difficulty */
     if (difficulty == DIFF_EASY) lives = 5;
     else if (difficulty == DIFF_NORMAL) lives = 3;
     else lives = 3;
@@ -48,14 +75,14 @@ static void game_update(void) {
     if (game_over) return;
     if (warp_cooldown > 0) warp_cooldown--;
     if (pad_press & J_OPTION) {
-        /* Clear all sprites before returning to title */
         clear_sprites();
         state = STATE_TITLE; skip = 10; draw_title(); return;
     }
     update_ufo();
-
-    /* Parallax drift */
     scroll_stars();
+
+    /* Spawn grace */
+    if (spawn_grace > 0) spawn_grace--;
 
     /* Ship respawn */
     if (!alive) {
@@ -108,9 +135,6 @@ static void game_update(void) {
         }
     }
 
-    /* Spawn grace: tick down, flash ship */
-    if (spawn_grace > 0) spawn_grace--;
-
     /* Collisions: bullets vs rocks */
     for (i = 0; i < MAX_ENTS; i++) {
         if (ent_type[i]!=ENT_BULLET) continue;
@@ -134,7 +158,7 @@ static void game_update(void) {
             }
         }
     }
-    /* Ship vs rocks (skip during grace period) */
+    /* Ship vs rocks (skip during grace) */
     if (alive && ent_type[0]==ENT_SHIP && spawn_grace==0) {
         for (j = 1; j < MAX_ENTS; j++) {
             if (ent_type[j]<ENT_ROCK_L || ent_type[j]>ENT_ROCK_S) continue;
@@ -191,7 +215,7 @@ static void game_update(void) {
     /* Next wave */
     if (count_rocks()==0 && !game_over) { wave=wave+1; spawn_wave(); }
 
-    /* Draw all entities (sprite plane — no erase needed, just update positions) */
+    /* Draw all entities */
     for (i = 0; i < 16; i++) {
         if (ent_type[i]!=ENT_NONE) draw_ent(i);
     }
@@ -205,6 +229,8 @@ void main(void) {
     sound_init();
     load_high_scores();
     difficulty = DIFF_NORMAL;
+    retro_mode = 0;
+    konami_pos = 0;
 
     state = STATE_TITLE; skip = 10;
     pad_cur = 0; pad_prev = 0; rand_seed = 42;
@@ -219,16 +245,14 @@ void main(void) {
 
         if (state==STATE_TITLE) {
             rand_seed = rand_seed + VBCounter;
-            /* L/R to change difficulty */
+            check_konami();
             if (pad_press & J_LEFT) {
-                if (difficulty > 0) difficulty = difficulty - 1;
-                draw_title();
+                if (difficulty > 0) { difficulty = difficulty - 1; draw_title(); }
             }
             if (pad_press & J_RIGHT) {
-                if (difficulty < 2) difficulty = difficulty + 1;
-                draw_title();
+                if (difficulty < 2) { difficulty = difficulty + 1; draw_title(); }
             }
-            if (pad_press & J_A) { state=STATE_GAME; skip=10; game_start(); }
+            if (pad_press & J_A) { clear_sprites(); state=STATE_GAME; skip=10; game_start(); }
             if (pad_press & J_OPTION) { clear_sprites(); state=STATE_SCORES; skip=10; draw_scores(); }
         } else if (state==STATE_GAME) {
             game_update();

@@ -26,12 +26,21 @@ static u8 ent_spr(u8 i) {
 
 /* Sprite palettes (separate from scroll palettes) */
 void setup_sprite_palettes(void) {
-    SetPalette(SPRITE_PLANE, PAL_SHIP, 0, RGB(10,12,15), RGB(7,9,13), RGB(15,10,2));
-    SetPalette(SPRITE_PLANE, PAL_ROCK1, 0, RGB(15,15,15), RGB(13,13,13), RGB(15,15,15));
-    SetPalette(SPRITE_PLANE, PAL_ROCK2, 0, RGB(12,12,12), RGB(10,10,10), RGB(14,14,14));
-    SetPalette(SPRITE_PLANE, PAL_ROCK3, 0, RGB(9,9,9), RGB(7,7,7), RGB(11,11,11));
-    SetPalette(SPRITE_PLANE, PAL_UFO, 0, RGB(6,15,6), RGB(4,12,4), RGB(8,15,8));
-    SetPalette(SPRITE_PLANE, PAL_TEXT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
+    if (retro_mode) {
+        SetPalette(SPRITE_PLANE, PAL_SHIP, 0, RGB(0,14,0), RGB(0,10,0), RGB(0,15,0));
+        SetPalette(SPRITE_PLANE, PAL_ROCK1, 0, RGB(0,15,0), RGB(0,12,0), RGB(0,14,0));
+        SetPalette(SPRITE_PLANE, PAL_ROCK2, 0, RGB(0,11,0), RGB(0,9,0), RGB(0,13,0));
+        SetPalette(SPRITE_PLANE, PAL_ROCK3, 0, RGB(0,8,0), RGB(0,6,0), RGB(0,10,0));
+        SetPalette(SPRITE_PLANE, PAL_UFO, 0, RGB(0,15,0), RGB(0,11,0), RGB(0,13,0));
+        SetPalette(SPRITE_PLANE, PAL_TEXT, 0, RGB(0,15,0), RGB(0,13,0), RGB(0,15,0));
+    } else {
+        SetPalette(SPRITE_PLANE, PAL_SHIP, 0, RGB(10,12,15), RGB(7,9,13), RGB(15,10,2));
+        SetPalette(SPRITE_PLANE, PAL_ROCK1, 0, RGB(15,15,15), RGB(13,13,13), RGB(15,15,15));
+        SetPalette(SPRITE_PLANE, PAL_ROCK2, 0, RGB(12,12,12), RGB(10,10,10), RGB(14,14,14));
+        SetPalette(SPRITE_PLANE, PAL_ROCK3, 0, RGB(9,9,9), RGB(7,7,7), RGB(11,11,11));
+        SetPalette(SPRITE_PLANE, PAL_UFO, 0, RGB(6,15,6), RGB(4,12,4), RGB(8,15,8));
+        SetPalette(SPRITE_PLANE, PAL_TEXT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
+    }
 }
 
 void init_entities(void) {
